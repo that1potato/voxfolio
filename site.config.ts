@@ -32,8 +32,8 @@ export const site = {
 };
 
 export const sections: Section[] = [
-  { id: "about",    label: "ABOUT",    kind: "panel" },
-  { id: "projects", label: "PROJECTS", kind: "list"  },
+  { id: "article", label: "ARTICLE PANEL", kind: "panel" },
+  { id: "list",    label: "LIST PANEL",    kind: "list"  },
 ];
 
 // Shared UI colors: the site chrome (editor + reading surface) plus the

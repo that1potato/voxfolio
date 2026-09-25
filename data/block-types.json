@@ -19,6 +19,14 @@
       }
     },
     {
+      "id": "slate",
+      "label": "Slate",
+      "appearance": {
+        "light": "#565169",
+        "dark": "#3d3950"
+      }
+    },
+    {
       "id": "lava",
       "label": "Lava",
       "appearance": {

@@ -201,7 +201,8 @@ To test, use the Immersive Web Emulator browser extension, or a real headset ove
 - `BASE_OFFSET = (-4.3, 40.5, 34.7)` puts the camera south of the map with a 7° lean west at about 49° pitch. The distance is scaled per viewport by binary search against the active terrain's grid corners (inset) plus element bounds, with the height treated as `FIT_HEIGHT` = 3.
 - **The Canvas initial `camera.position` in `VoxelMap.tsx` duplicates `BASE_OFFSET`; change both.**
 - Three.js axes: **+X = east**, **-X = west**, **+Z = south** (toward the camera), **-Z = north**, +Y up.
-- The starter terrain `home` is a 33×23 grid at origin (-16, -11), so X ∈ [-16, 16] and Z ∈ [-11, 11]. It has a grass/sand layer at y = 0 over a dirt base at y = -1 (the water surface sits just below 0).
+- The demo root terrain `home` is a 57×41 grid at origin (-28, -20), so X ∈ [-28, 28] and Z ∈ [-20, 20]. It has a grass/sand layer at y = 0 over a dirt base at y = -1 (the water surface sits just below 0), plus a small tree built upward in the north-west corner. A second demo terrain, `dusk` (35×25, `"atmosphere": "dusk"`), is reached through the NEXT ISLAND button and ships with generated surroundings.
+- Demo content: `sections` are `article` (panel, `content/article.mdx`) and `list` (list, `content/list/*.mdx`). Buttons are labelled after the feature they demonstrate (ARTICLE PANEL, LIST PANEL, HOVER ME → `hoverCardItem: "list/sample-item"`, NEXT ISLAND, EXTERNAL LINK). Demo images, the GIF and button icons are in `public/samples/`; README screenshots are in `docs/screenshots/`.
 - Presentation modes (`AmbientCamera` `mode`):
   - `map`: the default framing.
   - `reading`: orbits to `READING_OFFSET` and reframes the island below the overlay panel, using the panel's bottom edge reported by `SectionOverlay`. `MenuShell` switches to `reading` while an overlay is open.

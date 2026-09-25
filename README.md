@@ -1,6 +1,43 @@
 # voxfolio
 
-voxfolio turns your personal site's homepage into a small 3D voxel island. It's a Next.js (App Router) and React Three Fiber template: the island's titles, captions and buttons are made of voxels, and its buttons open your MDX content in frosted-glass overlays on top of the scene. You shape the island in a visual map editor at `/editor`, so you don't have to write 3D code. It also includes light and dark themes, atmosphere presets for each terrain, generated surroundings, and a WebXR mode that places the island on a virtual table when you open the site on a headset.
+Welcome to voxfolio~
+
+Hi, I'm Brian. This is the framework behind [my personal portfolio](https://brian-pz.vercel.app), and I've decided to open-source it.
+
+I'll be honest with you: nobody *needs* a 3D voxel island to show off a résumé. I could've thrown together a one-page site in an afternoon. Instead I hand-painted an island block by block, built a map editor so I could keep painting it, and then taught the whole thing to sit on your coffee table in mixed reality, because the bespoke, slightly over-engineered version of a thing is the part I actually enjoy building. Somewhere along the way it stopped being "my website" and quietly turned into a little framework.
+
+So here it is, with all of my stuff taken out: a demo island where every button shows off one feature, a visual editor so you never have to write 3D code, and MDX panels for your words. Paint your own island, swap in your own content, and if you build something with it, I'd genuinely love to see it.
+
+In more technical terms: voxfolio turns your personal site's homepage into a small 3D voxel island. It's a Next.js (App Router) and React Three Fiber template: the island's titles, captions and buttons are made of voxels, and its buttons open your MDX content in frosted-glass overlays on top of the scene. You shape the island in a visual map editor at `/editor`. It also includes light and dark themes, atmosphere presets for each terrain, generated surroundings, and a WebXR mode that places the island on a virtual table when you open the site on a headset.
+
+## See it in action
+
+My portfolio runs on voxfolio: **[brian-pz.vercel.app](https://brian-pz.vercel.app)**
+
+| | |
+| --- | --- |
+| ![A sakura voxel island with a pink voxel name, icon buttons and a glowing counter](docs/screenshots/portfolio-home.jpg) | ![The same island at night, in a moonlit blue palette](docs/screenshots/portfolio-night.jpg) |
+| The home island: voxel title, icon buttons, a Nixie counter, and generated surroundings | Same island, one click on the light/dark switch |
+| ![A dusk gallery of voxel sculptures with a hover card over one of them](docs/screenshots/portfolio-gallery.jpg) | ![A project article open in a frosted-glass panel above the island](docs/screenshots/portfolio-article.jpg) |
+| A second terrain with its own dusk mood, plus a hover card | A project opened in the frosted-glass reading panel |
+
+### What you start with
+
+Clone this repo and you get a demo island where every button is named after the feature it shows off:
+
+![The voxfolio demo island: title, image, counter, animated GIF and five labelled buttons](docs/screenshots/demo-island.jpg)
+
+- **ARTICLE PANEL** opens a panel section, a single MDX file (`content/article.mdx`). On a personal site, this is your "About me".
+- **LIST PANEL** opens a list section, a folder of MDX files grouped into cards (`content/list/`). On a personal site, these are your projects or posts.
+- **HOVER ME** shows a hover card for one list item, and clicking it opens that item directly.
+- **NEXT ISLAND** swaps the whole scene to a second terrain, `dusk`, in place.
+- **EXTERNAL LINK** opens a URL in a new tab. It and NEXT ISLAND also show icon images on buttons.
+- **IMAGE**, **ANIMATED GIF** and **COUNTER** are standalone elements, and the pink tree in the corner is blocks built upward in the 3D editor.
+
+| | |
+| --- | --- |
+| ![The dusk demo island: slate ground, lantern pillars and an upright DUSK title](docs/screenshots/demo-dusk.jpg) | ![The map editor: block types, ground painter, 3D preview and element list](docs/screenshots/editor.jpg) |
+| The `dusk` island: an atmosphere preset, an upright title, lantern pillars built from blocks, and generated surroundings | The map editor at `/editor` |
 
 ## Features
 
@@ -28,7 +65,7 @@ npm run dev
 - http://localhost:3000 is the site.
 - http://localhost:3000/editor is the map editor.
 
-The starter includes one island, `home`, with a title, a caption and two buttons. The buttons open the sample About panel and Projects list.
+The demo includes two islands, `home` and `dusk`, plus sample content for one panel section and one list section (see [What you start with](#what-you-start-with)).
 
 Other scripts: `npm run build`, `npm start`, `npm run lint`, `npm run typecheck`, and `npm run dev:https` (see [Mixed reality](#mixed-reality)).
 
@@ -43,10 +80,12 @@ export const site = {
 };
 
 export const sections: Section[] = [
-  { id: "about",    label: "ABOUT",    kind: "panel" },
-  { id: "projects", label: "PROJECTS", kind: "list"  },
+  { id: "article", label: "ARTICLE PANEL", kind: "panel" },
+  { id: "list",    label: "LIST PANEL",    kind: "list"  },
 ];
 ```
+
+For a portfolio you'd probably rename these to something like `{ id: "about", label: "ABOUT", kind: "panel" }` and `{ id: "projects", label: "PROJECTS", kind: "list" }`. Rename the content file and folder to match, and update the buttons in `/editor`.
 
 - A section's `id` is also the name of its content file or folder, and it's what a button's content action points to. `label` is the header of a list overlay.
 - The large 3D title on the island is not `site.name`. It's a `title` element on the terrain, which you edit in `/editor`.
@@ -65,12 +104,12 @@ List items can use any of these frontmatter fields, all optional:
 
 ```yaml
 ---
-title: Sample Project                          # defaults to the file name
+title: Sample Item                             # defaults to the file name
 date: "2025-06-01"                             # YYYY-MM-DD; lists sort newest first
 summary: One line about it.                    # card text, article lede, hover card
-category: Web                                  # group heading and eyebrow; items without one go under "Other", listed last
+category: Demo                                 # group heading and eyebrow; items without one go under "Other", listed last
 tech: ["TypeScript", "React"]                  # tag pills in the article header and hover card
-repo: https://github.com/your-name/sample-project   # button in the article header
+repo: https://github.com/your-name/sample-item   # button in the article header
 demo: https://example.com                      # button in the article header
 ---
 ```
@@ -99,7 +138,7 @@ MDX is Markdown with GFM (tables, task lists, strikethrough, autolinks). You can
 - Links that start with `http` open in a new tab. Other links go through Next.js `<Link>`. voxfolio has no page per content item, so don't link to routes like `/projects/…`.
 - Write component attributes as double-quoted strings (`width="420px"`, not `width={420}`) so the XR reading panel can read them too.
 
-The sample content is safe to delete or replace: `content/about.mdx`, `content/projects/*.mdx` and `public/samples/voxel-cube.png`.
+The demo content is safe to delete or replace: `content/article.mdx`, `content/list/*.mdx`, and the images, GIF and icons in `public/samples/`. The demo islands are `data/terrains/home.json` and `data/terrains/dusk.json` (plus `data/generated-surroundings/dusk.json`).
 
 **To add a section:**
 
@@ -163,7 +202,7 @@ A button's action is one of the following, or none:
 
 Buttons have a few more settings:
 
-- **Hover card → item** shows a list item's card when you hover over the button. It's saved as `hoverCardItem: "<sectionId>/<itemSlug>"`, for example `"projects/sample-project"`. Hover cards appear only on the live site, not in the editor preview or in XR.
+- **Hover card → item** shows a list item's card when you hover over the button. It's saved as `hoverCardItem: "<sectionId>/<itemSlug>"`, for example `"list/sample-item"`. Hover cards appear only on the live site, not in the editor preview or in XR.
 - **Content** can be a caption, an image, or both, with padding.
 - Width and depth set the button's size.
 
@@ -185,7 +224,7 @@ Buttons have a few more settings:
 
 The editor writes plain JSON, so you can also edit the files by hand.
 
-- **`data/terrains/index.json`**: `{ "version": 2, "rootTerrainId": "home", "terrainIds": ["home"] }`. The root terrain loads first. Every id in `terrainIds` needs a matching `data/terrains/<id>.json`.
+- **`data/terrains/index.json`**: `{ "version": 2, "rootTerrainId": "home", "terrainIds": ["home", "dusk"] }`. The root terrain loads first. Every id in `terrainIds` needs a matching `data/terrains/<id>.json`.
 - **A terrain file** has these fields:
   - `id`: must match the file name. Use lowercase letters, digits and single hyphens, and don't use `index`.
   - `label`
@@ -366,7 +405,7 @@ components/
   menu/                      Home shell, reading overlay, theme switcher, XR entry button
   article/                   Reading-surface building blocks
   mdx/                       MDX renderer and <Figure>/<YouTube>/<Video>
-content/                     Your MDX (sample content included)
+content/                     Your MDX (demo content included)
 data/
   block-types.json           Paintable block types and their colors
   terrains/index.json        Terrain manifest (root terrain and order)
@@ -376,7 +415,8 @@ lib/                         Terrain types and validation, editor store, content
 public/
   fonts/msdf/                Font atlases for the XR reading panel (see its README)
   map-assets/                Images uploaded from the editor
-  samples/                   Image used by the sample content
+  samples/                   Demo images, GIF and button icons
+docs/screenshots/            README screenshots
 scripts/generate-msdf-fonts.sh   Rebuilds the XR font atlases
 site.config.ts               Site name and description, sections, UI palette
 atmosphere.config.ts         Atmosphere presets
@@ -387,6 +427,7 @@ article.config.ts            Reading-surface design tokens
 ## Credits and licensing
 
 - **Code:** MIT. See [`LICENSE`](./LICENSE).
+- **Demo images:** the pixel art in `public/samples/` (postcard, spinning-cube GIF, icons, voxel cube) was made for this repo. Use it however you like.
 - **XR font atlases:** the MSDF atlases in `public/fonts/msdf/` are made from Fira Sans, Fira Code and Fraunces, which are licensed under the SIL Open Font License 1.1. The copyright notices and license text are in [`public/fonts/msdf/OFL.txt`](./public/fonts/msdf/OFL.txt).
 - **Web fonts:** Press Start 2P, VT323, Inter, Fira Sans, Fira Code and Fraunces are downloaded from Google Fonts by `next/font` at build time and served by the site itself. They're also under the SIL OFL.
 - **Built with:** [Next.js](https://nextjs.org), [React Three Fiber](https://r3f.docs.pmnd.rs), [drei](https://github.com/pmndrs/drei), [@react-three/xr](https://github.com/pmndrs/xr), [@react-three/uikit](https://github.com/pmndrs/uikit), [Three.js](https://threejs.org), [Tailwind CSS](https://tailwindcss.com), [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote), [zustand](https://github.com/pmndrs/zustand), [gifuct-js](https://github.com/matt-way/gifuct-js) and [r3f-perf](https://github.com/utsuboco/r3f-perf).

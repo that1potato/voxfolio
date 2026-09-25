@@ -1,0 +1,36 @@
+---
+title: Article Panel
+---
+
+This is a **panel** section: one MDX file, `content/article.mdx`, opened by the island's _ARTICLE PANEL_ button. Its heading comes from the `title` in the frontmatter. For a personal site this is where your "About me" would go. Rename the section in `site.config.ts` and point a button at it in `/editor`.
+
+## Markdown, the usual way
+
+- **Bold**, _italic_, `inline code` and [links](https://example.com)
+- Bullet lists like this one
+- Tables, task lists and strikethrough (GFM)
+
+1. Numbered lists work too
+2. So do headings from `##` down
+
+| You write          | Readers see                   |
+| ------------------ | ----------------------------- |
+| `content/*.mdx`    | A frosted-glass article panel |
+| `content/<id>/*`   | A list of cards, like LIST PANEL |
+| `public/…`         | Images, GIFs and videos       |
+
+## Images and GIFs
+
+Anything in `public/` can go in an article. The `<Figure>` component adds a caption and a max width:
+
+<Figure src="/samples/postcard.png" alt="A pixel-art postcard: a tiny voxel island with a pink tree on a lake" caption="A static image (public/samples/postcard.png)." width="420px" />
+
+Animated GIFs work the same way, and on the island itself:
+
+<Figure src="/samples/spinning-cube.gif" alt="A spinning pixel-art grass block" caption="An animated GIF (public/samples/spinning-cube.gif)." width="280px" />
+
+## Video
+
+`<YouTube id="…" />` embeds a video, and `<Video src="…" />` plays a file from `public/`:
+
+<YouTube id="aqz-KE-bpKQ" title="Big Buck Bunny (Blender Foundation)" />
