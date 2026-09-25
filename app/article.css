@@ -1,0 +1,870 @@
+.article-theme {
+  color: var(--article-text);
+  font-family: var(--article-font-body);
+}
+
+.article-reading-layer {
+  color: var(--article-text);
+}
+
+/*
+ * Spotlight-style "blur in": a diffuse, enlarged, blurred cloud converges into
+ * the crisp panel (and the reverse on close). Shared with the 3D button hover
+ * card (see .hover-card-* below) via the keyframes below.
+ *
+ * Mosaic-safe layering — the trick that avoids the end-of-animation "snap":
+ * a `filter` (or `will-change: filter`) on the glass *root* would turn it into
+ * an isolated group, leaving the descendant `.article-glass-backdrop`'s
+ * `backdrop-filter` (the mosaic lens) with nothing to sample. A non-identity
+ * `transform`, however, is safe. So we never put `filter` on the root:
+ *   - root: `transform: scale()` converge (safe — mosaic stays engaged)
+ *   - backdrop + highlight: opacity fade (the mosaic fades in, never snaps)
+ *   - surface (a SIBLING of the backdrop, not an ancestor): opacity + the
+ *     blur lives here, giving the cloud read without touching the backdrop.
+ */
+@keyframes article-glass-converge {
+  from {
+    transform: scale(var(--article-motion-scale));
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes article-glass-veil {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes article-glass-content {
+  from {
+    opacity: 0;
+    filter: blur(var(--article-motion-blur));
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes article-glass-disperse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(var(--article-motion-scale));
+  }
+}
+
+@keyframes article-glass-veil-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes article-glass-content-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(var(--article-motion-blur));
+  }
+}
+
+/* Resting state — no filter anywhere on the root, so the mosaic works. */
+.article-reading-motion {
+  transform: none;
+  transform-origin: center;
+}
+
+/* Pre-reveal frame: hold the cloud start state (no animation) so the panel
+   never flashes before the open animation begins. */
+.article-reading-opening .article-reading-motion {
+  transform: scale(var(--article-motion-scale));
+}
+.article-reading-opening .article-reading-motion
+  > :is(.article-glass-backdrop, .article-glass-highlight) {
+  opacity: 0;
+}
+.article-reading-opening .article-reading-motion > .article-surface {
+  opacity: 0;
+  filter: blur(var(--article-motion-blur));
+}
+
+/* Enter — no `forwards`, so each layer settles on its filterless base. */
+.article-reading-open .article-reading-motion {
+  animation: article-glass-converge var(--article-motion-duration)
+    var(--article-motion-easing);
+}
+.article-reading-open .article-reading-motion
+  > :is(.article-glass-backdrop, .article-glass-highlight) {
+  animation: article-glass-veil var(--article-motion-duration)
+    var(--article-motion-easing);
+}
+.article-reading-open .article-reading-motion > .article-surface {
+  animation: article-glass-content var(--article-motion-duration)
+    var(--article-motion-easing);
+}
+
+/* Leave — explicit exit keyframes reliably restart after the enter animation. */
+.article-reading-closing .article-reading-motion {
+  animation: article-glass-disperse var(--article-motion-duration)
+    var(--article-motion-easing) forwards;
+}
+.article-reading-closing .article-reading-motion
+  > :is(.article-glass-backdrop, .article-glass-highlight) {
+  animation: article-glass-veil-out var(--article-motion-duration)
+    var(--article-motion-easing) forwards;
+}
+.article-reading-closing .article-reading-motion > .article-surface {
+  animation: article-glass-content-out var(--article-motion-duration)
+    var(--article-motion-easing) forwards;
+}
+
+.article-reading-closing {
+  pointer-events: none;
+}
+
+.article-glass {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: var(--article-max-width);
+  /* Clip the mosaic backdrop (below) to the panel shape. */
+  overflow: hidden;
+  border-radius: var(--article-radius);
+}
+
+.article-glass-backdrop,
+.article-glass-highlight {
+  display: none;
+  pointer-events: none;
+}
+
+.article-surface {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  border: var(--article-border-width) solid var(--article-border);
+  border-radius: var(--article-radius);
+  background: var(--article-fallback-surface);
+  box-shadow: var(--article-surface-shadow);
+  color: var(--article-text);
+}
+
+@supports
+  (((backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px))) and
+    ((mask-image: linear-gradient(black, transparent)) or
+      (-webkit-mask-image: linear-gradient(black, transparent)))) {
+  .article-surface {
+    background: var(--article-surface);
+  }
+
+  .article-glass-backdrop {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    /* In-place mosaic: pixelate exactly the scene directly behind the panel.
+       The parent .article-glass (overflow: hidden) clips it to the panel shape. */
+    -webkit-backdrop-filter: var(--article-backdrop-filter-fallback);
+    backdrop-filter: var(--article-backdrop-filter);
+  }
+
+  .article-glass-highlight {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: block;
+    border-radius: var(--article-radius);
+    box-shadow: inset 0 1px 0 var(--article-highlight);
+  }
+}
+
+/* Floating overlay chrome — no top bar; button floats, title fades in on scroll. */
+.article-floating-action {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  z-index: 5;
+}
+
+.article-floating-title {
+  position: absolute;
+  top: 0.75rem;
+  left: 1rem;
+  z-index: 5;
+  max-width: calc(100% - 8.5rem);
+  margin: 0;
+  padding: 0.6rem 1rem;
+  border-radius: var(--article-control-radius);
+  border: var(--article-border-width) solid var(--article-border);
+  background: var(--article-control-background);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--article-text);
+  font-family: var(--article-font-title);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
+}
+
+.article-floating-title.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 640px) {
+  .article-floating-action {
+    top: 1rem;
+    right: 1.5rem;
+  }
+
+  .article-floating-title {
+    top: 1rem;
+    left: 1.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-floating-title {
+    transition: none;
+    transform: none;
+  }
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-close {
+  font-family: var(--article-font-display);
+}
+
+.article-close {
+  border: var(--article-border-width) solid var(--article-border);
+  border-radius: var(--article-control-radius);
+  background: var(--article-control-background);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--article-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.65rem 1rem;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.article-close:hover {
+  background: var(--article-control-hover-background);
+  transform: translateY(-1px);
+}
+
+.article-close:focus-visible,
+.article-card:focus-visible,
+.article-content a:focus-visible {
+  outline: 2px solid var(--article-accent);
+  outline-offset: 3px;
+}
+
+.article-content {
+  color: var(--article-text);
+  font-family: var(--article-font-body);
+  font-size: var(--article-body-size);
+  font-weight: var(--article-body-weight);
+  line-height: var(--article-body-line-height);
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3 {
+  color: var(--article-text);
+  font-family: var(--article-font-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.article-content h1 {
+  margin-bottom: 1rem;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.article-content h2 {
+  margin-top: 2.1rem;
+  margin-bottom: 0.7rem;
+  font-size: clamp(1.2rem, 2.3vw, 1.5rem);
+}
+
+.article-content h3 {
+  margin-top: 1.6rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.08rem;
+}
+
+.article-content p,
+.article-content ul,
+.article-content ol {
+  margin-bottom: 1.1rem;
+  color: color-mix(in srgb, var(--article-text) 85%, var(--article-muted-text));
+}
+
+.article-content ul,
+.article-content ol {
+  padding-left: 1.35rem;
+}
+
+.article-content ul {
+  list-style: disc;
+}
+
+.article-content ol {
+  list-style: decimal;
+}
+
+.article-content li {
+  margin-bottom: 0.4rem;
+  padding-left: 0.15rem;
+}
+
+.article-content a {
+  color: var(--article-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--article-accent) 45%,
+    transparent
+  );
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.article-content a:hover {
+  color: var(--article-accent-hover);
+}
+
+.article-content strong {
+  color: var(--article-text);
+  font-weight: 700;
+}
+
+.article-content code,
+.article-muted code {
+  border: var(--article-border-width) solid var(--article-divider);
+  border-radius: 0.45rem;
+  background: var(--article-code-background);
+  color: var(--article-text);
+  font-family: var(--article-font-mono);
+  font-size: 0.875em;
+  padding: 0.14rem 0.35rem;
+}
+
+/* Headings h4–h6 — continue the scale below h3. */
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  color: var(--article-text);
+  font-family: var(--article-font-display);
+  font-weight: 600;
+  letter-spacing: var(--article-heading-letter-spacing);
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.article-content h4 {
+  font-size: 0.98rem;
+}
+
+.article-content h5 {
+  font-size: 0.9rem;
+}
+
+.article-content h6 {
+  font-size: 0.8rem;
+  color: var(--article-muted-text);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Italic. */
+.article-content em {
+  font-style: italic;
+}
+
+/* Strikethrough (GFM). */
+.article-content del {
+  color: var(--article-muted-text);
+  text-decoration: line-through;
+}
+
+/* Blockquote. */
+.article-content blockquote {
+  margin: 1.25rem 0;
+  padding: 0.4rem 0 0.4rem 1.1rem;
+  border-left: 3px solid var(--article-accent);
+  color: var(--article-muted-text);
+  font-style: italic;
+}
+
+.article-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code blocks (fenced). Reset the inline-code chrome on nested <code>. */
+.article-content pre {
+  margin: 1.25rem 0;
+  padding: 1rem 1.15rem;
+  border: var(--article-border-width) solid var(--article-divider);
+  border-radius: var(--article-card-radius);
+  background: var(--article-code-background);
+  overflow-x: auto;
+  font-family: var(--article-font-mono);
+  font-size: 0.85em;
+  line-height: 1.6;
+}
+
+.article-content pre code {
+  display: block;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  color: var(--article-text);
+}
+
+/* Horizontal rule. */
+.article-content hr {
+  border: 0;
+  border-top: var(--article-border-width) solid var(--article-divider);
+  margin: 2rem 0;
+}
+
+/* Images. */
+.article-content img,
+.article-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25rem auto;
+  border-radius: var(--article-card-radius);
+  border: var(--article-border-width) solid var(--article-divider);
+}
+
+/* Figure + caption. */
+.article-figure {
+  margin: 1.5rem auto;
+}
+
+.article-figure .article-image {
+  margin-bottom: 0.5rem;
+}
+
+.article-figcaption {
+  text-align: center;
+  color: var(--article-muted-text);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Responsive 16:9 media (YouTube iframe / self-hosted video).
+   No border/background here: the player draws its own frame, so an extra
+   border would double up into a visible ring. The iframe overscans by 1px
+   on each side so its own square edge is clipped under the rounded corners. */
+.article-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 1.5rem 0;
+  border-radius: var(--article-card-radius);
+  overflow: hidden;
+}
+
+.article-video iframe,
+.article-video video {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  border: 0;
+}
+
+/* Tables (GFM). */
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.925rem;
+}
+
+.article-content th,
+.article-content td {
+  border: var(--article-border-width) solid var(--article-divider);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+}
+
+.article-content th {
+  background: var(--article-tag-background);
+  color: var(--article-text);
+  font-weight: 600;
+}
+
+.article-content td {
+  color: var(--article-muted-text);
+}
+
+/* Task lists (GFM). */
+.article-content li.task-list-item {
+  list-style: none;
+  margin-left: -1.1rem;
+}
+
+.article-content li.task-list-item input[type="checkbox"] {
+  margin-right: 0.5rem;
+  accent-color: var(--article-accent);
+}
+
+/* Reading column — centres article content at a comfortable measure. */
+.article-doc {
+  max-width: var(--article-read-measure);
+  margin-inline: auto;
+}
+
+.article-doc--wide {
+  max-width: var(--article-max-width);
+}
+
+/* Editorial masthead: eyebrow → headline → lede → meta. */
+.article-masthead {
+  margin-bottom: 2rem;
+  padding-bottom: 1.6rem;
+  border-bottom: var(--article-border-width) solid
+    color-mix(in srgb, var(--article-accent) 22%, var(--article-divider));
+}
+
+.article-eyebrow {
+  margin-bottom: 0.6rem;
+  color: var(--article-accent);
+  font-family: var(--article-font-display);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.article-headline {
+  color: var(--article-text);
+  font-family: var(--article-font-title);
+  font-size: clamp(1.55rem, 3.2vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  line-height: 1.1;
+}
+
+.article-lede {
+  margin-top: 0.8rem;
+  color: var(--article-muted-text);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+/* Meta row inside the masthead. */
+.article-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.article-meta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Pill links with a leading icon. */
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  font-family: var(--article-font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.6rem 1.05rem;
+  border: var(--article-border-width) solid transparent;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.project-link svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.project-link:hover {
+  transform: translateY(-1px);
+}
+
+.project-link:focus-visible {
+  outline: 2px solid var(--article-accent);
+  outline-offset: 3px;
+}
+
+/* Primary action (live demo) — filled accent. */
+.project-link--primary {
+  background: var(--article-accent);
+  color: #fdf6f0;
+}
+
+.project-link--primary:hover {
+  background: var(--article-accent-hover);
+}
+
+/* Secondary action (repository) — outlined. */
+.project-link--secondary {
+  background: var(--article-control-background);
+  border-color: var(--article-divider);
+  color: var(--article-text);
+}
+
+.project-link--secondary:hover {
+  background: var(--article-control-hover-background);
+  border-color: var(--article-border);
+}
+
+.article-meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+/* Tech pills: `.hover-card-tag` in the 3D hover card, `.project-tag` in the
+   masthead meta row (ProjectMeta). */
+.hover-card-tag,
+.project-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--article-tag-background);
+  color: var(--article-muted-text);
+  font-family: var(--article-font-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  padding: 0.32rem 0.75rem;
+}
+
+.hover-card-tag::before,
+.project-tag::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-right: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--article-accent) 60%, transparent);
+}
+
+.article-muted,
+.article-meta {
+  color: var(--article-muted-text);
+}
+
+.article-list {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.article-card {
+  /* Reset button appearance so <button> looks identical to <a> cards */
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  /* Card chrome */
+  display: block;
+  border: var(--article-border-width) solid var(--article-divider);
+  border-radius: var(--article-card-radius);
+  background: var(--article-card-background);
+  color: var(--article-text);
+  padding: 1.1rem 1.2rem;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.article-group-heading {
+  margin-bottom: 0.6rem;
+  color: var(--article-muted-text);
+  font-family: var(--article-font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.article-card:hover {
+  border-color: var(--article-border);
+  background: var(--article-card-hover-background);
+  transform: translateY(-2px);
+}
+
+.article-card-title {
+  color: var(--article-text);
+  font-family: var(--article-font-body);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.article-card-summary {
+  margin-top: 0.35rem;
+  color: var(--article-muted-text);
+  font-size: 0.925rem;
+  line-height: 1.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-reading-motion,
+  .article-reading-motion > .article-glass-backdrop,
+  .article-reading-motion > .article-glass-highlight,
+  .article-reading-motion > .article-surface {
+    animation: none !important;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .article-card,
+  .article-close {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Hover card — small frosted info card shown above a button
+   in the 3D scene (drei <Html>). Reuses the article-glass
+   material; just constrains size and tightens spacing.
+   ============================================================ */
+/* Anchor wrapper: a static transform places the card above-and-beside the
+   button so it never covers it. (A transform on this ancestor is safe for the
+   card's backdrop-filter; opacity/filter would not be.) */
+.hover-card-anchor {
+  transform: translate(80px, -100%);
+}
+
+/* Flipped to the left of the button when the right side has no room. */
+.hover-card-anchor.hover-card-left {
+  transform: translate(calc(-100% - 80px), -100%);
+}
+
+/* The card is the motion element — shares the article panel's layered
+   blur-in/out keyframes (root converge, backdrop/highlight veil, surface blur)
+   so the mosaic stays engaged throughout and never snaps. */
+.hover-card {
+  width: 18rem;
+  max-width: 18rem;
+  transform: none;
+  transform-origin: center;
+}
+
+/* Pre-reveal frame: hold the cloud start state (no animation). */
+.hover-card-enter {
+  transform: scale(var(--article-motion-scale));
+}
+.hover-card-enter > :is(.article-glass-backdrop, .article-glass-highlight) {
+  opacity: 0;
+}
+.hover-card-enter > .article-surface {
+  opacity: 0;
+  filter: blur(var(--article-motion-blur));
+}
+
+/* Enter — no `forwards`, so each layer settles on its filterless base. */
+.hover-card-in {
+  animation: article-glass-converge var(--article-motion-duration)
+    var(--article-motion-easing);
+}
+.hover-card-in > :is(.article-glass-backdrop, .article-glass-highlight) {
+  animation: article-glass-veil var(--article-motion-duration)
+    var(--article-motion-easing);
+}
+.hover-card-in > .article-surface {
+  animation: article-glass-content var(--article-motion-duration)
+    var(--article-motion-easing);
+}
+
+/* Leave — explicit exit keyframes reliably restart after hover-in completes. */
+.hover-card-out {
+  animation: article-glass-disperse var(--article-motion-duration)
+    var(--article-motion-easing) forwards;
+}
+.hover-card-out > :is(.article-glass-backdrop, .article-glass-highlight) {
+  animation: article-glass-veil-out var(--article-motion-duration)
+    var(--article-motion-easing) forwards;
+}
+.hover-card-out > .article-surface {
+  animation: article-glass-content-out var(--article-motion-duration)
+    var(--article-motion-easing) forwards;
+}
+
+.hover-card .article-surface {
+  padding: 0.9rem 1rem 1rem;
+}
+
+.hover-card .article-eyebrow {
+  margin-bottom: 0.4rem;
+}
+
+.hover-card .article-lede {
+  margin-top: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.hover-card .article-meta-tags {
+  margin-top: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-card,
+  .hover-card > .article-glass-backdrop,
+  .hover-card > .article-glass-highlight,
+  .hover-card > .article-surface {
+    animation: none !important;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}

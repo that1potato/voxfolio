@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+.env*.local
+.DS_Store
+*.log
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+
+# Self-signed HTTPS certificates from `npm run dev:https` (next dev --experimental-https)
+certificates

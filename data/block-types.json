@@ -1,0 +1,94 @@
+{
+  "version": 2,
+  "defaultBlockTypeId": "grass",
+  "blockTypes": [
+    {
+      "id": "dirt",
+      "label": "Dirt",
+      "appearance": {
+        "light": "#956e56",
+        "dark": "#612f19"
+      }
+    },
+    {
+      "id": "stone",
+      "label": "Stone",
+      "appearance": {
+        "light": "#8a8a8a",
+        "dark": "#5e5e5e"
+      }
+    },
+    {
+      "id": "lava",
+      "label": "Lava",
+      "appearance": {
+        "light": "#ff7a1a",
+        "dark": "#d24a00"
+      }
+    },
+    {
+      "id": "grass",
+      "label": "Grass",
+      "appearance": {
+        "light": "#91b694",
+        "dark": "#4a6b50"
+      }
+    },
+    {
+      "id": "sand",
+      "label": "Sand",
+      "appearance": {
+        "light": "#e3cfa3",
+        "dark": "#7d6a4a"
+      }
+    },
+    {
+      "id": "cherry-white",
+      "label": "Cherry White",
+      "appearance": {
+        "light": "#ffffff",
+        "dark": "#51499b"
+      }
+    },
+    {
+      "id": "soft-pink",
+      "label": "Soft Pink",
+      "appearance": {
+        "light": "#f2c7c7",
+        "dark": "#8a5f6b"
+      }
+    },
+    {
+      "id": "pale-green",
+      "label": "Pale Green",
+      "appearance": {
+        "light": "#d5f3d8",
+        "dark": "#6a8a70"
+      }
+    },
+    {
+      "id": "sakura",
+      "label": "Sakura",
+      "appearance": {
+        "light": "#ff7a7a",
+        "dark": "#ffb7c5"
+      }
+    },
+    {
+      "id": "sakura-highlight",
+      "label": "Sakura Highlight",
+      "appearance": {
+        "light": "#ff8080",
+        "dark": "#ff7a7a"
+      }
+    },
+    {
+      "id": "blue-print-blue",
+      "label": "Blueprint Blue",
+      "appearance": {
+        "light": "#b4eceb",
+        "dark": "#4a7c85"
+      }
+    }
+  ]
+}

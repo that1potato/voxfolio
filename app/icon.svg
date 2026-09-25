@@ -1,0 +1,9 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="#1a1410"/>
+  <!-- Isometric grass voxel — the island, in one block. -->
+  <g stroke="#4a3426" stroke-width="0.75" stroke-linejoin="miter">
+    <polygon points="16,5 27,11 16,17 5,11" fill="#91b694"/>
+    <polygon points="5,11 16,17 16,26 5,20" fill="#956e56"/>
+    <polygon points="27,11 16,17 16,26 27,20" fill="#7a5a46"/>
+  </g>
+</svg>

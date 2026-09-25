@@ -1,0 +1,599 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-block: var(--font-press-start), var(--font-vt323), system-ui,
+    sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+}
+
+html[data-site-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-site-theme="dark"] {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: #0e0a08;
+  color: theme("colors.cream");
+  font-family: var(--font-body);
+}
+
+@property --voxel-sky-top {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #aecadf;
+}
+
+@property --voxel-sky-mid {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #d6e1e6;
+}
+
+@property --voxel-sky-bottom {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f1e7d6;
+}
+
+.voxel-map-shell {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.voxel-map-canvas {
+  position: absolute !important;
+  z-index: 1;
+  inset: 0;
+  background: transparent !important;
+}
+
+.voxel-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    var(--voxel-sky-top) 0%,
+    var(--voxel-sky-mid) 52%,
+    var(--voxel-sky-bottom) 100%
+  );
+  transition:
+    opacity var(--voxel-backdrop-opacity-duration, 0ms) ease,
+    --voxel-sky-top var(--voxel-backdrop-color-duration) ease,
+    --voxel-sky-mid var(--voxel-backdrop-color-duration) ease,
+    --voxel-sky-bottom var(--voxel-backdrop-color-duration) ease;
+}
+
+.voxel-sky-decor {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: paint;
+}
+
+.voxel-sky-decor--light {
+  opacity: 0.96;
+}
+
+.voxel-cloud {
+  --cloud-width: clamp(9rem, 15vw, 18rem);
+  --cloud-fill: rgba(255, 255, 255, 0.9);
+  --cloud-bright: rgba(255, 255, 255, 0.98);
+  --cloud-shade: rgba(190, 214, 226, 0.26);
+  position: absolute;
+  top: var(--cloud-top);
+  left: var(--cloud-left);
+  width: var(--cloud-width);
+  height: clamp(3.75rem, 5.8vw, 7rem);
+  opacity: var(--cloud-opacity);
+  filter: drop-shadow(0 10px 16px rgba(96, 128, 148, 0.12));
+}
+
+.voxel-cloud::before,
+.voxel-cloud::after {
+  content: "";
+  position: absolute;
+  display: block;
+}
+
+.voxel-cloud::before {
+  left: 7%;
+  right: 7%;
+  bottom: 16%;
+  height: 42%;
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    var(--cloud-bright) 0%,
+    var(--cloud-fill) 62%,
+    rgba(244, 250, 253, 0.88) 100%
+  );
+  box-shadow:
+    inset 0 -0.45rem 0 var(--cloud-shade),
+    -1.4rem 0.35rem 0 -0.42rem rgba(255, 255, 255, 0.8),
+    1.65rem 0.3rem 0 -0.5rem rgba(255, 255, 255, 0.86);
+}
+
+.voxel-cloud::after {
+  left: 24%;
+  top: 7%;
+  width: 34%;
+  height: 56%;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 44% 35%,
+    var(--cloud-bright) 0 42%,
+    var(--cloud-fill) 66%,
+    rgba(244, 250, 253, 0.84) 100%
+  );
+  box-shadow:
+    -1.9rem 0.95rem 0 -0.75rem rgba(255, 255, 255, 0.88),
+    2.2rem 0.8rem 0 -0.65rem rgba(255, 255, 255, 0.92),
+    4.1rem 1.28rem 0 -1rem rgba(255, 255, 255, 0.78);
+}
+
+.voxel-cloud--one {
+  --cloud-top: 12dvh;
+  --cloud-left: 8vw;
+  --cloud-opacity: 0.82;
+}
+
+.voxel-cloud--two {
+  --cloud-top: 27dvh;
+  --cloud-left: 62vw;
+  --cloud-width: clamp(7rem, 12vw, 14rem);
+  --cloud-opacity: 0.72;
+}
+
+.voxel-cloud--four {
+  --cloud-top: 7dvh;
+  --cloud-left: 42vw;
+  --cloud-width: clamp(6rem, 10vw, 12rem);
+  --cloud-opacity: 0.58;
+}
+
+.voxel-cloud--five {
+  --cloud-top: 20dvh;
+  --cloud-left: 79vw;
+  --cloud-width: clamp(8rem, 13vw, 16rem);
+  --cloud-opacity: 0.7;
+}
+
+.voxel-sky-decor--dark {
+  opacity: 0.96;
+}
+
+.voxel-moon {
+  position: absolute;
+  top: clamp(3.5rem, 8dvh, 7rem);
+  right: clamp(4rem, 12vw, 13rem);
+  width: clamp(3rem, 5vw, 5.5rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #f1f5ff;
+  box-shadow:
+    0 0 0 2px rgba(194, 214, 255, 0.26),
+    0 0 24px rgba(183, 207, 255, 0.36);
+}
+
+.voxel-star {
+  position: absolute;
+  width: var(--star-size);
+  aspect-ratio: 1;
+  top: var(--star-top);
+  left: var(--star-left);
+  opacity: 0.82;
+  background: rgba(231, 240, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(231, 240, 255, 0.18),
+    0 0 10px rgba(133, 169, 255, 0.4);
+}
+
+.voxel-star--one {
+  --star-top: 8dvh;
+  --star-left: 13vw;
+  --star-size: 4px;
+}
+
+.voxel-star--two {
+  --star-top: 18dvh;
+  --star-left: 30vw;
+  --star-size: 3px;
+}
+
+.voxel-star--three {
+  --star-top: 12dvh;
+  --star-left: 70vw;
+  --star-size: 5px;
+}
+
+.voxel-star--four {
+  --star-top: 31dvh;
+  --star-left: 82vw;
+  --star-size: 3px;
+}
+
+.voxel-star--five {
+  --star-top: 38dvh;
+  --star-left: 19vw;
+  --star-size: 3px;
+}
+
+.voxel-star--six {
+  --star-top: 26dvh;
+  --star-left: 57vw;
+  --star-size: 4px;
+}
+
+.voxel-star--seven {
+  --star-top: 7dvh;
+  --star-left: 43vw;
+  --star-size: 3px;
+}
+
+.voxel-star--eight {
+  --star-top: 22dvh;
+  --star-left: 10vw;
+  --star-size: 5px;
+}
+
+.voxel-star--nine {
+  --star-top: 42dvh;
+  --star-left: 38vw;
+  --star-size: 3px;
+}
+
+.voxel-star--ten {
+  --star-top: 36dvh;
+  --star-left: 71vw;
+  --star-size: 4px;
+}
+
+.voxel-star--eleven {
+  --star-top: 16dvh;
+  --star-left: 88vw;
+  --star-size: 3px;
+}
+
+.voxel-star--twelve {
+  --star-top: 47dvh;
+  --star-left: 91vw;
+  --star-size: 4px;
+}
+
+.voxel-star--thirteen {
+  --star-top: 5dvh;
+  --star-left: 57vw;
+  --star-size: 3px;
+}
+
+.voxel-star--fourteen {
+  --star-top: 29dvh;
+  --star-left: 4vw;
+  --star-size: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voxel-backdrop {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Glass theme switcher — vertical 2-option pill selector
+   ============================================================
+   Design: liquid-glass frosted pill with sliding highlight.
+   Positioning is handled by the MenuShell wrapper; we only
+   define the shape and glass effect here.
+   ============================================================ */
+
+/* Light-mode glass tokens (scoped — only the switcher reads these) */
+.theme-switcher {
+  --c-glass:             #bbbbbc;
+  --c-light:             #fff;
+  --c-dark:              #000;
+  --c-content:           #334;
+  --c-action:            #0052f5;
+  --glass-reflex-light:  1;
+  --glass-reflex-dark:   1;
+  --saturation:          150%;
+}
+
+/* Dark-mode overrides */
+html[data-site-theme="dark"] .theme-switcher {
+  --c-glass:             #bbbbbc;
+  --c-light:             #fff;
+  --c-dark:              #000;
+  --c-content:           #e1e1e1;
+  --c-action:            #03d5ff;
+  --glass-reflex-light:  0.3;
+  --glass-reflex-dark:   2;
+  --saturation:          150%;
+}
+
+/* Container */
+.theme-switcher {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  margin: 0;            /* override fieldset browser default margin */
+  min-inline-size: 0;   /* override fieldset browser default min-inline-size */
+  width: 54px;
+  height: 120px;  /* 2 × 52px option + 16px padding (top + bottom) */
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: none;
+  /* Match the article panel's corner radius (articleTheme.shape.radius). */
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--c-glass) 12%, transparent);
+  /* Same mosaic glass as the article panel via the global #article-mosaic
+     filter. Safari has no url() support in backdrop-filter, so it falls back
+     to the -webkit blur below. */
+  -webkit-backdrop-filter: blur(8px) saturate(var(--saturation));
+  backdrop-filter: url(#article-mosaic) saturate(var(--saturation));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -3px -8px 1px -6px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -0.3px -1px 4px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent),
+    inset -1.5px 2.5px 0px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0px 3px 4px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 2px -6.5px 1px -4px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+  /* Enter/leave animation — same transform + opacity motion as the article
+     panel. Animated on this element (not a wrapper) so its own opacity fades
+     the mosaic with it; an ancestor's opacity would break backdrop-filter. */
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transform-origin: center top;
+  transition:
+    background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+    box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
+    opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hidden state (overlay open) — fade + slide/scale out, like the panel. */
+.theme-switcher--hidden {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0) scale(0.985);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-switcher--hidden {
+    transform: none;
+  }
+}
+
+/* Visually-hidden legend — float:left prevents the fieldset's special
+   legend border-notch rendering which otherwise reserves a line of space. */
+.theme-switcher__legend {
+  float: left;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
+}
+
+/* Visually-hidden radio input */
+.theme-switcher__input {
+  clip: rect(0 0 0 0);
+  clip-path: inset(100%);
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+/* Each label/option cell */
+.theme-switcher__option {
+  --c: var(--c-content);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 160ms;
+}
+
+.theme-switcher__option:hover {
+  --c: var(--c-action);
+}
+
+.theme-switcher__option:hover .theme-switcher__icon {
+  scale: 1.2;
+}
+
+.theme-switcher__option:has(input:checked) {
+  --c: var(--c-content);
+  cursor: default;
+}
+
+.theme-switcher__option:has(input:checked) .theme-switcher__icon {
+  scale: 1;
+}
+
+/* Icon SVG */
+.theme-switcher__icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: var(--c);
+  transition: color 160ms, scale 200ms cubic-bezier(0.5, 0, 0, 1);
+}
+
+/* Sliding highlight (the selected-state indicator).
+   top = padding-top (8px) + option-center (26px) - half-pill-height (23px) = 11px
+   Centers the highlight on the 52px option regardless of which is selected. */
+.theme-switcher::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 11px;
+  display: block;
+  width: calc(100% - 8px);
+  /* Concentric with the 20px container minus the 4px inset. */
+  height: 46px;
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--c-glass) 36%, transparent);
+  z-index: -1;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 2px 1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -1.5px -1px 0px -1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -2px -6px 1px -5px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 60%), transparent),
+    inset -1px 2px 3px -1px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 20%), transparent),
+    inset 0px -4px 1px -2px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 3px 6px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+  transition:
+    background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+    box-shadow 400ms cubic-bezier(1, 0, 0.4, 1);
+}
+
+/* Pill at position 0 (light / first option) */
+.theme-switcher:has(input[value="light"]:checked)::after {
+  translate: 0 0;
+}
+
+/* Pill at position 1 (dark / second option) */
+.theme-switcher:has(input[value="dark"]:checked)::after {
+  translate: 0 52px;
+}
+
+/* Squash animation when pill moves */
+@media (prefers-reduced-motion: no-preference) {
+  .theme-switcher:has(input[value="light"]:checked)::after {
+    animation: theme-switcher-squash 300ms ease;
+    transition:
+      background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+      box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
+      translate 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theme-switcher:has(input[value="dark"]:checked)::after {
+    animation: theme-switcher-squash 300ms ease;
+    transition:
+      background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+      box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
+      translate 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@keyframes theme-switcher-squash {
+  0%   { scale: 1 1; }
+  40%  { scale: 1 1.08; }
+  100% { scale: 1 1; }
+}
+
+/* ---------------------------------------------------------------------------
+   "View in your space" XR pill — same frosted-glass language as the theme
+   switcher, laid out horizontally. Only rendered when the device reports
+   immersive-session support (see EnterXRButton).
+   --------------------------------------------------------------------------- */
+.xr-pill {
+  --c-glass:            #bbbbbc;
+  --c-light:            #fff;
+  --c-dark:             #000;
+  --c-content:          #334;
+  --c-action:           #0052f5;
+  --glass-reflex-light: 1;
+  --glass-reflex-dark:  1;
+  --saturation:         150%;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 9px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--c-content);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  background-color: color-mix(in srgb, var(--c-glass) 12%, transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(var(--saturation));
+  backdrop-filter: url(#article-mosaic) saturate(var(--saturation));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 10%), transparent),
+    inset 1.8px 3px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 90%), transparent),
+    inset -2px -2px 0px -2px color-mix(in srgb, var(--c-light) calc(var(--glass-reflex-light) * 80%), transparent),
+    inset -0.3px -1px 4px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 12%), transparent),
+    0px 1px 5px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 10%), transparent),
+    0px 6px 16px 0px color-mix(in srgb, var(--c-dark) calc(var(--glass-reflex-dark) * 8%), transparent);
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transform-origin: center top;
+  transition:
+    color 160ms,
+    background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+    opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html[data-site-theme="dark"] .xr-pill {
+  --c-content:          #e1e1e1;
+  --c-action:           #03d5ff;
+  --glass-reflex-light: 0.3;
+  --glass-reflex-dark:  2;
+}
+
+.xr-pill:hover {
+  color: var(--c-action);
+}
+
+.xr-pill__icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: currentColor;
+  transition: scale 200ms cubic-bezier(0.5, 0, 0, 1);
+}
+
+.xr-pill:hover .xr-pill__icon {
+  scale: 1.12;
+}
+
+.xr-pill__label {
+  white-space: nowrap;
+}
+
+/* Hidden state (overlay open) — fade + slide out, like the theme switcher. */
+.xr-pill--hidden {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0) scale(0.985);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xr-pill--hidden {
+    transform: none;
+  }
+}

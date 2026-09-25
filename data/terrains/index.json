@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "rootTerrainId": "home",
+  "terrainIds": [
+    "home"
+  ]
+}
