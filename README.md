@@ -2,13 +2,7 @@
 
 Welcome to voxfolio~
 
-Hi, I'm Brian. This is the framework behind [my personal portfolio](https://brian-pz.vercel.app), and I've decided to open-source it.
-
-I'll be honest with you: nobody *needs* a 3D voxel island to show off a résumé. I could've thrown together a one-page site in an afternoon. Instead I hand-painted an island block by block, built a map editor so I could keep painting it, and then taught the whole thing to sit on your coffee table in mixed reality, because the bespoke, slightly over-engineered version of a thing is the part I actually enjoy building. Somewhere along the way it stopped being "my website" and quietly turned into a little framework.
-
-So here it is, with all of my stuff taken out: a demo island where every button shows off one feature, a visual editor so you never have to write 3D code, and MDX panels for your words. Paint your own island, swap in your own content, and if you build something with it, I'd genuinely love to see it.
-
-In more technical terms: voxfolio turns your personal site's homepage into a small 3D voxel island. It's a Next.js (App Router) and React Three Fiber template: the island's titles, captions and buttons are made of voxels, and its buttons open your MDX content in frosted-glass overlays on top of the scene. You shape the island in a visual map editor at `/editor`. It also includes light and dark themes, atmosphere presets for each terrain, generated surroundings, and a WebXR mode that places the island on a virtual table when you open the site on a headset.
+This is the framework behind [my personal portfolio](https://brian-pz.vercel.app), and I've decided to open-source it.
 
 ## See it in action
 
