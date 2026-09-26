@@ -4,7 +4,7 @@ Welcome to voxfolio~
 
 This is the framework behind [my personal portfolio](https://brian-pz.vercel.app), and I've decided to open-source it.
 
-Full disclosure: the idea and the system design are mostly mine, but most of the implementation was done with AI (Claude Code).
+Full disclosure: although the idea and the system architecture design are mostly done by me, most of the code implementation was by AI.
 
 ![voxfolio in action: an island sprouts in, switches to night, swaps to a projects gallery, shows a hover card and opens an article](docs/hero.webp)
 
