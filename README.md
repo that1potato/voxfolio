@@ -4,6 +4,10 @@ Welcome to voxfolio~
 
 This is the framework behind [my personal portfolio](https://brian-pz.vercel.app), and I've decided to open-source it.
 
+Full disclosure: the idea and the system design are mostly mine, but most of the implementation was done with AI (Claude Code).
+
+![voxfolio in action: an island sprouts in, switches to night, swaps to a projects gallery, shows a hover card and opens an article](docs/hero.webp)
+
 ## See it in action
 
 My portfolio runs on voxfolio: **[brian-pz.vercel.app](https://brian-pz.vercel.app)**
@@ -58,6 +62,10 @@ npm run dev
 
 - http://localhost:3000 is the site.
 - http://localhost:3000/editor is the map editor.
+
+Or deploy your own copy straight away:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fthat1potato%2Fvoxfolio&project-name=voxfolio&repository-name=voxfolio)
 
 The demo includes two islands, `home` and `dusk`, plus sample content for one panel section and one list section (see [What you start with](#what-you-start-with)).
 
@@ -410,7 +418,7 @@ public/
   fonts/msdf/                Font atlases for the XR reading panel (see its README)
   map-assets/                Images uploaded from the editor
   samples/                   Demo images, GIF and button icons
-docs/screenshots/            README screenshots
+docs/                        README screenshots, hero animation, social preview image
 scripts/generate-msdf-fonts.sh   Rebuilds the XR font atlases
 site.config.ts               Site name and description, sections, UI palette
 atmosphere.config.ts         Atmosphere presets
