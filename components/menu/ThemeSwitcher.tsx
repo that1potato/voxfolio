@@ -1,4 +1,4 @@
-import type { SiteThemeMode } from "@/theme.config";
+import type { ThemePreference } from "@/theme.config";
 
 // ---------------------------------------------------------------------------
 // Inline icon components (no external icon library in this project)
@@ -46,35 +46,59 @@ function MoonIcon({ className }: { className?: string }) {
   );
 }
 
+function SystemIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="2.5" y="3.5" width="19" height="13" rx="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="16.5" x2="12" y2="21" />
+    </svg>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Switcher
 // ---------------------------------------------------------------------------
 
 interface ModeOption {
-  mode: SiteThemeMode;
+  mode: ThemePreference;
   label: string;
   Icon: React.FC<{ className?: string }>;
 }
 
 const MODES: ModeOption[] = [
-  { mode: "light", label: "Light mode", Icon: SunIcon },
-  { mode: "dark",  label: "Dark mode",  Icon: MoonIcon },
+  { mode: "light",  label: "Light mode",         Icon: SunIcon },
+  { mode: "dark",   label: "Dark mode",          Icon: MoonIcon },
+  { mode: "system", label: "Match system theme", Icon: SystemIcon },
 ];
 
 interface Props {
-  themeMode: SiteThemeMode;
-  onThemeModeChange: (mode: SiteThemeMode) => void;
+  themePreference: ThemePreference;
+  onThemePreferenceChange: (preference: ThemePreference) => void;
   /** When true, the switcher fades + slides out (overlay open). */
   hidden?: boolean;
 }
 
 /**
- * Glass light/dark theme switcher — a vertical frosted-pill radiogroup in the
- * top-right corner. Styling lives in globals.css (.theme-switcher*).
- * Pure-CSS :has() drives the sliding highlight pill; MenuShell owns the state
- * (session-only, seeded from theme.config.ts).
+ * Glass light / dark / system theme switcher — a vertical frosted-pill
+ * radiogroup in the top-right corner. Styling lives in globals.css
+ * (.theme-switcher*). Pure-CSS :has() drives the sliding highlight pill;
+ * MenuShell owns the state (session-only, seeded from theme.config.ts).
  */
-export function ThemeSwitcher({ themeMode, onThemeModeChange, hidden }: Props) {
+export function ThemeSwitcher({
+  themePreference,
+  onThemePreferenceChange,
+  hidden,
+}: Props) {
   return (
     <fieldset
       className={`theme-switcher${hidden ? " theme-switcher--hidden" : ""}`}
@@ -88,8 +112,8 @@ export function ThemeSwitcher({ themeMode, onThemeModeChange, hidden }: Props) {
             name="site-theme"
             className="theme-switcher__input"
             value={mode}
-            checked={themeMode === mode}
-            onChange={() => onThemeModeChange(mode)}
+            checked={themePreference === mode}
+            onChange={() => onThemePreferenceChange(mode)}
             aria-label={label}
           />
           <Icon className="theme-switcher__icon" />

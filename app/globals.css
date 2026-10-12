@@ -330,7 +330,7 @@ html[data-site-theme="dark"] .theme-switcher {
   margin: 0;            /* override fieldset browser default margin */
   min-inline-size: 0;   /* override fieldset browser default min-inline-size */
   width: 54px;
-  height: 120px;  /* 2 × 52px option + 16px padding (top + bottom) */
+  height: 172px;  /* 3 × 52px option + 16px padding (top + bottom) */
   box-sizing: border-box;
   padding: 8px 10px;
   border: none;
@@ -484,6 +484,11 @@ html[data-site-theme="dark"] .theme-switcher {
   translate: 0 52px;
 }
 
+/* Pill at position 2 (system / third option) */
+.theme-switcher:has(input[value="system"]:checked)::after {
+  translate: 0 104px;
+}
+
 /* Squash animation when pill moves */
 @media (prefers-reduced-motion: no-preference) {
   .theme-switcher:has(input[value="light"]:checked)::after {
@@ -495,6 +500,14 @@ html[data-site-theme="dark"] .theme-switcher {
   }
 
   .theme-switcher:has(input[value="dark"]:checked)::after {
+    animation: theme-switcher-squash 300ms ease;
+    transition:
+      background-color 400ms cubic-bezier(1, 0, 0.4, 1),
+      box-shadow 400ms cubic-bezier(1, 0, 0.4, 1),
+      translate 280ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theme-switcher:has(input[value="system"]:checked)::after {
     animation: theme-switcher-squash 300ms ease;
     transition:
       background-color 400ms cubic-bezier(1, 0, 0.4, 1),

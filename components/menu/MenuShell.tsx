@@ -8,7 +8,8 @@ import { SectionOverlay } from "./SectionOverlay";
 import { TerrainProvider } from "@/lib/terrain-context";
 import { sections } from "@/site.config";
 import type { MapData } from "@/lib/terrains";
-import { siteTheme, type SiteThemeMode } from "@/theme.config";
+import { siteTheme, type ThemePreference } from "@/theme.config";
+import { useSystemTheme } from "@/lib/use-system-theme";
 import { ArticleMasthead } from "@/components/article/ArticleMasthead";
 import type {
   OverlayEntry,
@@ -45,9 +46,13 @@ export function MenuShell({ mapData, overlays, hoverCards }: Props) {
   // overlay can't composite, so we swap it for the in-scene panel.
   const [xrMode, setXrMode] = useState<XRSessionMode | null>(null);
   const inXR = xrMode !== null;
-  const [themeMode, setThemeMode] = useState<SiteThemeMode>(
-    siteTheme.activeMode,
+  // The switcher's pick; "system" resolves to the OS theme and follows it live.
+  // Everything below receives the resolved light/dark `themeMode`.
+  const [themePreference, setThemePreference] = useState<ThemePreference>(
+    siteTheme.defaultPreference,
   );
+  const systemMode = useSystemTheme();
+  const themeMode = themePreference === "system" ? systemMode : themePreference;
   const activeSection = active ? sections.find((s) => s.id === active) : null;
   const presentation = overlayOpen ? "reading" : "map";
   const overlayMounted = active !== null;
@@ -193,8 +198,8 @@ export function MenuShell({ mapData, overlays, hoverCards }: Props) {
       <div className="fixed right-6 top-6 z-30 flex flex-col items-end gap-3 md:right-10 md:top-10">
         <EnterXRButton hidden={overlayOpen} />
         <ThemeSwitcher
-          themeMode={themeMode}
-          onThemeModeChange={setThemeMode}
+          themePreference={themePreference}
+          onThemePreferenceChange={setThemePreference}
           hidden={overlayOpen}
         />
       </div>

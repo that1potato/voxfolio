@@ -14,7 +14,7 @@ voxfolio is an open-source template that turns a personal site's homepage into a
 - **`atmosphere.config.ts`**: named mood presets (`sky`, `water`, optional `surroundings` palette). A terrain opts in with `"atmosphere": "<id>"`. The file ships with `dusk`.
 
 Other root files tune look and feel:
-- `theme.config.ts`: `activeMode`, the light/dark mode the page loads in. The in-page `ThemeSwitcher` changes it for the session only.
+- `theme.config.ts`: `defaultPreference` (`"system"` | `"light"` | `"dark"`), what the in-page `ThemeSwitcher` starts on; `"system"` resolves via `lib/use-system-theme.ts` and follows OS changes live. The switcher's pick is session-only. `activeMode` is the resolved fallback: the SSR mode, the no-`matchMedia` mode, and the editor preview's starting mode.
 - `article.config.ts`: reading-surface tokens, turned into `--article-*` CSS variables for `app/article.css`.
 
 The map's own look is set in `components/map/voxel-backdrop.config.ts`, `water.config.ts` and `scene-lighting.config.ts`.
@@ -151,6 +151,7 @@ To test, use the Immersive Web Emulator browser extension, or a real headset ove
 | `editor-store.ts`, `editor/{api,selectors,terrain-ops}.ts` | Session-only Zustand store; fetch layer for `/api/editor/*`; dirty/status selectors; pure transforms |
 | `content.ts` | Server-only (`node:fs`) MDX loaders (`loadPanel`, `loadList`, `loadListItem`), `fm*` frontmatter narrowers, and `parseInline`/`markdownToBlocks` for XR |
 | `use-counter-value.ts` | `useCounterValue(endpoint)`: fetches JSON `{ count }` once per page load per URL (module-cached promise); `null` on failure |
+| `use-system-theme.ts` | `useSystemTheme()`: the OS light/dark theme via `useSyncExternalStore` on `matchMedia("(prefers-color-scheme: dark)")`, live; `siteTheme.activeMode` on the server and without `matchMedia` |
 | `surroundings/` | Generator + `GeneratedSurroundings` type (`MapData.surroundings` depends on it) |
 | `xr-store.ts` | Shared XR store (dynamic-import only) |
 | `radial-reveal.ts`, `theme-colors.ts`, `theme-transition.ts`, `map-element-appearance.ts`, `perf-flag.ts` | Reveal constants/state, `ThemeColorPair` helpers, frame-rate-independent theme blending, default element colors, perf flag |

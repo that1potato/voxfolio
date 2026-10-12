@@ -44,7 +44,7 @@ Clone this repo and you get a demo island where every button is named after the 
 - **MDX content in overlays.** Single-page panels and grouped lists (projects, posts and so on) open in an animated "mosaic glass" reading surface, and the camera reframes the island below it.
 - **Multiple terrains.** A button can swap the scene to another island in place, with a radial transition and a camera move.
 - **Hover cards.** A button can show a card for a list item (category, summary, tech tags) when you hover over it.
-- **Light and dark themes** for the whole scene and the reading surface. Visitors can switch themes for the current visit.
+- **Light and dark themes** for the whole scene and the reading surface. By default the site matches the visitor's system theme and follows it live if the system switches; visitors can also pick light or dark for the current visit.
 - **Atmosphere presets.** A terrain can have its own sky, water and surroundings palette. One preset, "Dusk", is included.
 - **Generated surroundings.** One click grows a coastline, beach, hills and trees around your island from a random seed.
 - **Nixie counter.** Glowing digits that show a fixed number, or a count loaded from any JSON endpoint you provide.
@@ -328,7 +328,7 @@ export const atmospheres: Record<string, AtmospherePreset> = {
 
 | File | Controls |
 | --- | --- |
-| `theme.config.ts` | `activeMode`: the mode the site loads in (`"light"` or `"dark"`). The sun/moon switcher lets a visitor change it for the current visit; the choice isn't saved. |
+| `theme.config.ts` | `defaultPreference`: what the theme switcher starts on (`"system"`, `"light"` or `"dark"`). `"system"` follows the visitor's OS theme, including live changes. The switcher lets a visitor pick light, dark or system for the current visit; the choice isn't saved. `activeMode` (`"light"` or `"dark"`) is the mode rendered on the server, used where the OS theme can't be read, and the editor preview's starting mode. |
 | `article.config.ts` | The reading surface: fonts, corner radius, max width, mosaic-glass block size, motion, typography, and light/dark colors and glass effects. These become CSS variables that `app/article.css` uses. |
 | `components/map/voxel-backdrop.config.ts` | The default sky gradient for each mode, drawn with CSS behind the canvas. |
 | `components/map/water.config.ts` | The default water base, foam and horizon colors for each mode. Keep `horizon` equal to the sky's `skyBottom`. |
@@ -422,7 +422,7 @@ docs/                        README screenshots, hero animation, social preview 
 scripts/generate-msdf-fonts.sh   Rebuilds the XR font atlases
 site.config.ts               Site name and description, sections, UI palette
 atmosphere.config.ts         Atmosphere presets
-theme.config.ts              Default light/dark mode
+theme.config.ts              Default theme (system, light or dark)
 article.config.ts            Reading-surface design tokens
 ```
 
